@@ -152,12 +152,48 @@ a {
 }
 
 .oven > * {
-  transition: transform 0.25s ease;
+  transition: transform 0.25s ease, opacity 0.3s ease;
 }
 
 .oven:hover > *,
 .oven:focus-visible > * {
   transform: scale(1.04) rotate(-1deg);
+}
+
+.oven-open {
+  opacity: 0;
+}
+
+.oven-opened .oven-closed {
+  opacity: 0;
+}
+
+.oven-opened .oven-open {
+  opacity: 1;
+}
+
+/* Tray + resume: clipped to the kitchen scene (top 3757 → bottom of tray at 4460,
+   plus room for its shadow) and slid out of view until the oven opens */
+.tray-clip {
+  position: absolute;
+  left: -5px;
+  top: 3757px;
+  width: 596px;
+  height: 711px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.tray-slide {
+  position: absolute;
+  inset: 0;
+  transform: translateY(720px);
+  transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) 0.25s;
+}
+
+.oven-opened .tray-slide {
+  transform: none;
+  pointer-events: auto;
 }
 
 #projects,
@@ -172,7 +208,8 @@ a {
   }
 
   .lift > *,
-  .oven > * {
+  .oven > *,
+  .tray-slide {
     transition: none;
   }
 }

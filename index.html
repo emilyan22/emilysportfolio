@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Inria+Serif:wght@400;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=2" />
   </head>
   <body>
     <main class="page">
@@ -99,14 +99,14 @@
         </div>
       </div>
 
-      <!-- oven: click to download resume -->
-      <a class="oven" href="assets/resume.pdf" download aria-label="Download my resume">
-        <div class="rot" style="left:646.64px;top:4098.84px;width:305.267px;height:327.352px">
+      <!-- oven: closed until clicked, then opens, slides the resume tray out and downloads the resume -->
+      <a id="oven" class="oven" href="assets/resume.pdf" download="Emily_An_Resume.pdf" aria-label="Open the oven to download my resume">
+        <div class="rot oven-closed" style="left:646.64px;top:4098.84px;width:305.267px;height:327.352px">
           <div style="transform:rotate(6.31deg);width:274.064px;height:299.045px">
             <div class="crop"><img src="assets/oven-closed.png" alt="" loading="lazy" style="height:103%;left:-28.74%;top:-1.5%;width:169.27%" /></div>
           </div>
         </div>
-        <div class="rot" style="left:576.33px;top:4091.93px;width:376.284px;height:359.904px">
+        <div class="rot oven-open" style="left:576.33px;top:4091.93px;width:376.284px;height:359.904px">
           <div style="transform:rotate(6.3deg);width:342.753px;height:324.225px">
             <div class="crop"><img src="assets/oven-open.png" alt="" loading="lazy" style="height:124.62%;left:0;top:-19.12%;width:119.54%" /></div>
           </div>
@@ -131,15 +131,19 @@
         </div>
       </div>
 
-      <!-- resume tray -->
-      <div class="a shadow" style="left:-5px;top:3856px;width:596px;height:604px">
-        <img class="cov" src="assets/tray.png" alt="" loading="lazy" />
-      </div>
-      <a class="lift" href="assets/resume.pdf" download aria-label="Download my resume">
-        <div class="a shadow" style="left:121px;top:3946px;width:345px;height:447px;border-radius:20px">
-          <img class="cov" src="assets/resume-ss.png" alt="Preview of Emily's resume" loading="lazy" style="border-radius:20px" />
+      <!-- resume tray: hidden below the kitchen until the oven is opened -->
+      <div class="tray-clip">
+        <div class="tray-slide">
+          <div class="a shadow" style="left:0;top:99px;width:596px;height:604px">
+            <img class="cov" src="assets/tray.png" alt="" loading="lazy" />
+          </div>
+          <a class="lift" href="assets/resume.pdf" download="Emily_An_Resume.pdf" aria-label="Download my resume" tabindex="-1">
+            <div class="a shadow" style="left:126px;top:189px;width:345px;height:447px;border-radius:20px">
+              <img class="cov" src="assets/resume-ss.png" alt="Preview of Emily's resume" loading="lazy" style="border-radius:20px" />
+            </div>
+          </a>
         </div>
-      </a>
+      </div>
 
       <div class="t pw" style="left:181px;top:732px;width:201px;color:#1c2751">
         <p class="b" style="font-size:16px">Education:</p>
@@ -327,14 +331,12 @@
       </a>
       <h2 id="contact" class="t b" style="left:121px;top:4589px;font-size:50px;color:#3f2a08;margin:0">Contact Info</h2>
       <p class="t b" style="left:250px;top:5214px;font-size:50px;color:#fff">Thanks for visiting!</p>
-      <!-- TODO: replace with your LinkedIn profile URL -->
-      <a class="lift" href="https://www.linkedin.com/" target="_blank" rel="noopener" aria-label="LinkedIn">
+      <a class="lift" href="https://www.linkedin.com/in/emily-an-6ab7b8247/" target="_blank" rel="noopener" aria-label="LinkedIn">
         <div class="a" style="left:75px;top:4690px;width:214px;height:213px">
           <img class="cov" src="assets/pie-linkedin.png" alt="" loading="lazy" />
         </div>
         <div class="a" style="left:93px;top:4707px;width:179px;height:179px;pointer-events:none">
           <img class="cov" src="assets/linkedin.png" alt="LinkedIn" loading="lazy" />
-          <div style="position:absolute;inset:0;box-shadow:inset 0 4px 4px 0 rgba(0,0,0,0.25)"></div>
         </div>
       </a>
 
@@ -385,6 +387,24 @@
       }
       fit();
       window.addEventListener("resize", fit);
+
+      // Clicking the oven opens it and slides out the resume tray; the link's
+      // default action downloads the resume at the same time. A "cookies are ready"
+      // sound plays from 0:05.
+      const ovenSound = new Audio("assets/cookies-are-ready.mp3");
+      ovenSound.preload = "auto";
+      // Load the sound into memory so seeking to 0:05 works even on servers
+      // without range-request support.
+      fetch(ovenSound.src)
+        .then((r) => r.blob())
+        .then((b) => (ovenSound.src = URL.createObjectURL(b)))
+        .catch(() => {});
+      document.getElementById("oven").addEventListener("click", () => {
+        ovenSound.currentTime = 5; // skip the intro, start at 0:05
+        ovenSound.play().catch(() => {});
+        page.classList.add("oven-opened");
+        page.querySelector(".tray-slide a").removeAttribute("tabindex");
+      });
     </script>
   </body>
 </html>
