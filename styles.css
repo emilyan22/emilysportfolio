@@ -133,6 +133,16 @@ a {
   display: contents;
 }
 
+/* right edge and 40px spacing match the Figma navbar */
+.nav {
+  position: absolute;
+  top: 38px;
+  right: 32px;
+  display: flex;
+  gap: 40px;
+  white-space: nowrap;
+}
+
 .nav a:hover {
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -198,6 +208,7 @@ a {
 
 #projects,
 #experience,
+#skills,
 #contact {
   scroll-margin-top: 40px;
 }
