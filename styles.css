@@ -1,0 +1,178 @@
+/* Page canvas is a 1:1 translation of the Figma "Home" frame (951 x 5301, plus an 8px outside stroke).
+   The whole canvas is scaled to the viewport with `zoom` (see script in index.html). */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: #e8dcc0;
+  -webkit-font-smoothing: antialiased;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.page {
+  --z: 1;
+  zoom: var(--z);
+  position: relative;
+  width: 951px;
+  height: 5301px;
+  margin: 8px auto;
+  background: #f9f2dd;
+  border-radius: 18px;
+  /* Figma stroke is 8px outside the frame */
+  box-shadow: 0 0 0 8px #906a5b;
+  overflow: clip;
+  font-family: "Inria Serif", serif;
+  font-style: normal;
+  line-height: normal;
+}
+
+/* ---------- layout primitives ---------- */
+
+.a {
+  position: absolute;
+}
+
+/* cropped image fill */
+.crop {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.crop > img {
+  position: absolute;
+  max-width: none;
+}
+
+/* object-fit cover fill */
+.cov {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* rotated layer: outer = rotated bounding box, inner = real size */
+.rot {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rot > div {
+  flex: none;
+  position: relative;
+}
+
+/* Figma drop shadows follow the image's alpha, not its bounding box */
+.shadow {
+  filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+/* ---------- text ---------- */
+
+.t {
+  position: absolute;
+  white-space: nowrap;
+  word-break: break-word;
+}
+
+.b {
+  font-weight: 700;
+}
+
+/* whitespace modes go on the lines so markup indentation isn't rendered */
+.pw {
+  white-space: normal;
+}
+
+.pw > p {
+  white-space: pre-wrap;
+}
+
+.pre > p {
+  white-space: pre;
+}
+
+.hand {
+  font-family: "Gochi Hand", cursive;
+}
+
+.center {
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+/* ---------- interactions ---------- */
+
+/* link wrappers don't create boxes, so their layers keep page-relative positions */
+.lift,
+.oven {
+  display: contents;
+}
+
+.nav a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.lift > * {
+  transition: transform 0.2s ease;
+}
+
+.lift:hover > *,
+.lift:focus-visible > * {
+  transform: translateY(-6px);
+}
+
+.oven {
+  cursor: pointer;
+}
+
+.oven > * {
+  transition: transform 0.25s ease;
+}
+
+.oven:hover > *,
+.oven:focus-visible > * {
+  transform: scale(1.04) rotate(-1deg);
+}
+
+#projects,
+#experience,
+#contact {
+  scroll-margin-top: 40px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .lift > *,
+  .oven > * {
+    transition: none;
+  }
+}
