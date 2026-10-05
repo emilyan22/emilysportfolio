@@ -133,6 +133,16 @@ a {
   display: contents;
 }
 
+/* right edge and 40px spacing match the Figma navbar */
+.nav {
+  position: absolute;
+  top: 38px;
+  right: 32px;
+  display: flex;
+  gap: 40px;
+  white-space: nowrap;
+}
+
 .nav a:hover {
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -196,8 +206,212 @@ a {
   pointer-events: auto;
 }
 
+/* ---------- project notes: flip on hover/tap ---------- */
+
+.flip {
+  position: absolute;
+  perspective: 1200px;
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.6s ease;
+}
+
+.flip-inner {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease;
+}
+
+.flip-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.flip-back {
+  transform: rotateY(180deg);
+}
+
+/* enlarge while flipped so the details are readable, and lift above neighbors */
+.flip:hover,
+.flip:focus-visible,
+.flip.is-active {
+  z-index: 5;
+  transform: scale(1.35);
+}
+
+.flip:hover .flip-inner,
+.flip:focus-visible .flip-inner,
+.flip.is-active .flip-inner {
+  transform: rotateY(180deg);
+}
+
+.note-detail {
+  position: absolute;
+  inset: 0;
+}
+
+/* The note image's paper is tilted in the file; the same rotation used on the front
+   straightens the mirrored back, and the text is left unrotated so it isn't slanted.
+   Text sits on the mirrored note's ruled lines: rules are 14.4px apart, the first
+   one below the tape is at 83.6px, and the ruled area spans x 61-232px
+   (binder holes on the right). Same font and color as the project names. */
+.note-copy {
+  position: absolute;
+  left: 73px;
+  top: 76px;
+  width: 150px;
+  color: #2a387b;
+  font-size: 10.5px;
+  line-height: 14.4px;
+}
+
+.note-title {
+  font-size: 17px;
+}
+
+.note-meta {
+  font-size: 9.5px;
+}
+
+.note-tools {
+  margin-top: 14.4px; /* skip one rule */
+  font-weight: 700;
+}
+
+/* ---------- experiences: press the dough flat on hover/tap ---------- */
+
+.exp {
+  position: absolute;
+  width: 464px;
+  height: 464px;
+  color: #45291e;
+  cursor: pointer;
+  outline: none;
+}
+
+.exp-ball,
+.exp-flat {
+  position: absolute;
+  inset: 0;
+}
+
+.exp-ball {
+  transform-origin: 50% 100%;
+  transition: transform 0.35s ease-in, opacity 0.2s ease-in 0.15s;
+}
+
+.exp-flat {
+  transform: scale(0.75, 0.6);
+  opacity: 0;
+  transition: transform 0.25s ease-in, opacity 0.2s ease-in;
+}
+
+.exp-front {
+  position: absolute;
+  inset: 0;
+  transition: opacity 0.2s ease;
+}
+
+.exp-detail {
+  position: absolute;
+  top: 50%;
+  left: 67px;
+  width: 330px;
+  transform: translateY(-50%);
+  font-size: 13px;
+  line-height: 1.32;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.exp-title {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.exp-role {
+  font-size: 15px;
+}
+
+.exp-date {
+  margin-bottom: 6px;
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+.exp-detail ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.exp-detail li + li {
+  margin-top: 5px;
+}
+
+.exp:hover,
+.exp:focus-visible,
+.exp.is-active {
+  z-index: 5;
+}
+
+/* the ball squashes down as if pressed... */
+.exp:hover .exp-ball,
+.exp:focus-visible .exp-ball,
+.exp.is-active .exp-ball {
+  transform: scale(1.15, 0.7);
+  opacity: 0;
+}
+
+/* ...and spreads out into a flat sheet of dough, staying within its own spot so
+   the two experiences never overlap */
+.exp:hover .exp-flat,
+.exp:focus-visible .exp-flat,
+.exp.is-active .exp-flat {
+  transform: scale(0.98);
+  opacity: 1;
+  transition: transform 0.5s cubic-bezier(0.25, 1.15, 0.5, 1) 0.15s, opacity 0.2s ease 0.15s;
+}
+
+.exp:hover .exp-front,
+.exp:focus-visible .exp-front,
+.exp.is-active .exp-front {
+  opacity: 0;
+}
+
+.exp:hover .exp-detail,
+.exp:focus-visible .exp-detail,
+.exp.is-active .exp-detail {
+  opacity: 1;
+  transition: opacity 0.3s ease 0.45s;
+}
+
+/* ---------- contact box ---------- */
+
+/* The pastries' original layout (x 75-867, y 4672-5085) scaled to fit the
+   open box's floor (x 252-712, y 4859-5195) */
+.contact-items {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 951px;
+  height: 5301px;
+  transform-origin: 0 0;
+  transform: translate(215.9px, 2270.5px) scale(0.565);
+  pointer-events: none;
+}
+
+.contact-items .lift > * {
+  pointer-events: auto;
+}
+
 #projects,
 #experience,
+#skills,
 #contact {
   scroll-margin-top: 40px;
 }
@@ -209,7 +423,13 @@ a {
 
   .lift > *,
   .oven > *,
-  .tray-slide {
+  .tray-slide,
+  .flip,
+  .flip-inner {
     transition: none;
+  }
+
+  .exp * {
+    transition: none !important;
   }
 }
